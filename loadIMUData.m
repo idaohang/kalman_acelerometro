@@ -1,6 +1,6 @@
 %path(path,'./geodetic');
 clear all;
-IMUData = fopen('BUFFGPS.TXT','r');
+IMUData = fopen('IMUQuieta.txt','r');
 
 Data = textscan(IMUData,'%s');%,'Delimiter', '\n');
 
