@@ -1,0 +1,37 @@
+Descripción de los registros de aceleración
+-------------------------------------------
+
+Cada archivo de registro corresponde a un tipo de trayectoria.
+De cada trayectoria se registraron 5 repeticiones.
+La aceleración se registro cada 1 segundo (en cada eje).
+Entre las repeticiones el aparato permaneció de 15 a 60 segundos 
+en reposo (se debería observar una aceleración nula o muy pequeña).
+
+Tipos de trayectorias
+---------------------
+- Cuadrado:     
+      Siguiendo las aristas de un cuadrado de 10 m x 10 m.
+
+- ZigZag:       
+      Zigzagueando sobre las aristas de un cuadrado de 10 m x 10 m
+      (con una amplitud aproximada de 1.5 m)
+
+- AtrásAdelante:
+      Siguiendo las aristas de un cuadrado de 10 m x 10 m pero caminando
+      3 o 4 pasos adelante y 1 o 2 atrás.
+
+- CuadradoLento:     
+      Siguiendo las aristas de un cuadrado de 10 m x 10 m pero caminando
+      más lento.
+
+- Aleatorio:
+      Caminando de forma aleatoria dentro del cuadrado de 10 m x 10 m.
+
+- Rombo:
+      Siguiendo las aristas de un rombo de 10 m x 10 m.
+      Es el cuadrado rotado 45 grados.
+
+
+Formato del archivo  (Corroborar con José!)
+-------------------
+a_x,a_y,a_z
