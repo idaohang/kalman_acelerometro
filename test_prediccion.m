@@ -2,11 +2,11 @@ clear all; close all; clc;
 %% TODO
 % - No funciona. Al menos no se ve el cuadrado esperado
 % - como calculo la varianza del error de medicion??
-% - ¿Qué hacer con la gravedad? hay que filtrarla? o agregarla al modelo?
-% - ¿Mejora al tomar tiempos del GPS en vez de 1 segundo?
-% - Revisar definición de R (covarianza del ruido de medición)
+% - ï¿½Quï¿½ hacer con la gravedad? hay que filtrarla? o agregarla al modelo?
+% - ï¿½Mejora al tomar tiempos del GPS en vez de 1 segundo?
+% - Revisar definiciï¿½n de R (covarianza del ruido de mediciï¿½n)
 
-%% Cargo los datos de aceleración
+%% Cargo los datos de aceleraciï¿½n
 
 tipo_trayectoria = 'Cuadrado';
 
@@ -44,15 +44,15 @@ t=1:N; % vector de tiempos dale que se tomaron muestras cada 1 segundo
 % E(w)=E(v)=0
 % A veces H la llaman C (por ejemplo en la ayuda de matlab)
 
-%% Varianza en el error de medición
+%% Varianza en el error de mediciï¿½n
 % Estimada a partir del registro de la IMUquieta
 load('IMUQuieta');
 % mean(ACCEL)
 bias_acel = 0.0223;
 % var_error_med = var((ACCEL-bias_acel) * 9.81);  % 1g --> 9.81 m/s^2
 
-a_med = a_med - repmat(mean(a_med,1),N,1);
-var_error_med = var(a_med(1:20,:));
+a_med2 = a_med - repmat(mean(a_med,1),N,1);
+var_error_med = var(a_med2(1:20,:));
 
 
 %% estados
@@ -71,30 +71,30 @@ x = zeros(length(x0),N); % ver x0
 a_est = zeros(size(a_med));
 
 
-%% Matriz de transición de estados (A)
-% Se considera aceleración constante en el intervalo
-% Movimiento rectilíneo uniformemente acelerado
+%% Matriz de transiciï¿½n de estados (A)
+% Se considera aceleraciï¿½n constante en el intervalo
+% Movimiento rectilï¿½neo uniformemente acelerado
 % p(k) = p(k-1) + v(k) * dt + 0.5 * a(k) * dt^2
 % v(k) = v(k-1) + a(k) * dt
 % a(k) = a(k-1) 
 
 Ai = [ 1  dt 0.5*dt.^2 ; 
-       0   1    dt     ; % Matriz de transición para un solo eje
+       0   1    dt     ; % Matriz de transiciï¿½n para un solo eje
        0   0    1     ];
 
-A = blkdiag(Ai,Ai,Ai);   % Matriz de transición
+A = blkdiag(Ai,Ai,Ai);   % Matriz de transiciï¿½n
 
-%% Matriz de observación (H, la ayuda de Matlab le llama C)
+%% Matriz de observaciï¿½n (H, la ayuda de Matlab le llama C)
 % Relaciona los estados con las mediciones
 % Me quedo solo con la aceleracion
 
-Hi = [0  0  1]; % Matriz de observación para un solo eje
+Hi = [0  0  1]; % Matriz de observaciï¿½n para un solo eje
 
-H = blkdiag(Hi,Hi,Hi);  % Matriz de observación
+H = blkdiag(Hi,Hi,Hi);  % Matriz de observaciï¿½n
 
 %% Matriz de covarianza del ruido del proceso ( Q = E(w*w') )
-% A causa de la integración, el ruido presente en las mediciones de la
-% aceleración se propagan a la velocidad y la posición.
+% A causa de la integraciï¿½n, el ruido presente en las mediciones de la
+% aceleraciï¿½n se propagan a la velocidad y la posiciï¿½n.
 % El filtro de kalman utiliza esta matriz para reducir el efecto.
 
 % elijo la matriz inicial como en filieri melchiotti, salvo que tomo cada
@@ -118,16 +118,16 @@ Qz = qc_z^2 * Qi;
 Q = blkdiag(Qx,Qy,Qz);  % Matriz de covarianza del ruido del proceso
 
 
-%% Matriz de covarianza del ruido de medición ( R = E(v*v') )
+%% Matriz de covarianza del ruido de mediciï¿½n ( R = E(v*v') )
 % Los supongo independientes??
 
 R = diag(var_error_med); % Varianza del error de medicion en cada eje
 
 
-%% Matriz de covarianza del error de estimación de los estados (P)
-% Como se actualizará en cada iteración la suposición inicial es que sea la
+%% Matriz de covarianza del error de estimaciï¿½n de los estados (P)
+% Como se actualizarï¿½ en cada iteraciï¿½n la suposiciï¿½n inicial es que sea la
 % matriz identidad. El equivocarnos dilata la convergencia pero a largo
-% plazo debería funcionar.
+% plazo deberï¿½a funcionar.
 
 P = eye(9);
 
@@ -137,14 +137,14 @@ P = eye(9);
 
 %% time variant kalman filter
 for j=2:N
-    % Predicción
+    % Predicciï¿½n
     x(:,j) = A * x(:,j-1); % x[n|n-1]
     P = A * P * A' + Q;    % P[n|n-1]
 
     % Ganancia del filtro de Kalman:
     K = P * H' /(H * P * H' + R); % / hace la inversa
     
-    % Corrección basado en la observación (a_med)
+    % Correcciï¿½n basado en la observaciï¿½n (a_med)
     x(:,j) = x(:,j) + K * (a_med(j)' - H * x(:,j));   % x[n|n] 
     P = P - K * H * P; % ==(eye(9)-K*H)*P             % P[n|n]
     
@@ -159,15 +159,15 @@ end
 figure(1)
 eje = ['x'; 'y'; 'z'];
 for j = 1:3:7
-    subplot(3,3,j), plot(t,x(j,:),'--')
+    subplot(3,3,j), plot(t,x(j,:),'--'); axis tight
     title(['Posicion en el eje ' eje((j+2)/3)])
     xlabel('No. de muestras'), ylabel('Posicion')
 
-    subplot(3,3,j+1), plot(t,x(j+1,:),'--')
+    subplot(3,3,j+1), plot(t,x(j+1,:),'--'); axis tight
     title(['Velocidad en el eje ' eje((j+2)/3)])
     xlabel('No. de muestras'), ylabel('Velocidad')
 
-    subplot(3,3,j+2), plot(t,a_med(:,(j+2)/3),'--',t,x(j+2,:),'-')
+    subplot(3,3,j+2), plot(t,a_med(:,(j+2)/3),'--',t,x(j+2,:),'-'); axis tight
     title(['Aceleracion en el eje ' eje((j+2)/3)])
     xlabel('No. de muestras'), ylabel('Aceleracion')
 end
